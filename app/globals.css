@@ -46,6 +46,16 @@ body {
   body > div {
     margin: 0 !important;
     padding: 0 !important;
+    background: white !important;
+    min-height: auto !important;
+  }
+
+  /* Убираем все отступы и фоны у вложенных контейнеров */
+  body > div > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    background: white !important;
   }
 
   /* Убираем margin-bottom у последнего print-area для предотвращения пустой страницы */
