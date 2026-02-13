@@ -137,7 +137,7 @@ export default function PriceList({ category, items }: PriceListProps) {
                       {item.price}
                       {typeof item.price === "number" ||
                       !isNaN(Number(item.price))
-                        ? "₽"
+                        ? " р."
                         : ""}
                     </span>
                   </div>
