@@ -24,3 +24,74 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Стили для печати */
+@media print {
+  /* Скрываем элементы, которые не нужны при печати */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Убираем все отступы и паддинги у body и html */
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Скрываем основной контейнер страницы, показываем только print-area */
+  body > div {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Настройки для A4 формата - убираем margin, чтобы не было разрыва */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  /* Область для печати */
+  .print-area {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding-inline: 20mm !important;
+    padding-block: 10mm !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Убираем разрывы страниц внутри элементов */
+  .print-area > * {
+    page-break-inside: avoid !important;
+  }
+
+  /* Заголовок без разрывов */
+  .print-area h1,
+  .print-area h2 {
+    page-break-after: avoid !important;
+  }
+
+  /* Улучшенная печать текста */
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* Стили для области A4 на экране */
+.print-area {
+  width: 210mm;
+  min-height: 297mm; /* Высота A4 */
+  padding-inline: 20mm !important;
+  padding-block: 10mm !important;
+  box-sizing: border-box;
+}
