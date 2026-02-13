@@ -48,6 +48,11 @@ body {
     padding: 0 !important;
   }
 
+  /* Убираем margin-bottom у последнего print-area для предотвращения пустой страницы */
+  .print-area:last-child {
+    margin-bottom: 0 !important;
+  }
+
   /* Настройки для A4 формата - убираем margin, чтобы не было разрыва */
   @page {
     size: A4;
@@ -59,7 +64,7 @@ body {
     width: 100% !important;
     max-width: none !important;
     min-height: 297mm !important;
-    height: 297mm !important;
+    height: auto !important;
     margin: 0 !important;
     padding-inline: 20mm !important;
     padding-block: 10mm !important;
@@ -67,6 +72,7 @@ body {
     page-break-inside: avoid !important;
     display: flex !important;
     flex-direction: column !important;
+    box-sizing: border-box !important;
   }
 
   /* Убираем разрывы страниц внутри элементов */
