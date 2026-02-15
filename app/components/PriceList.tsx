@@ -15,8 +15,8 @@ export default function PriceList({ category, items }: PriceListProps) {
   useEffect(() => {
     // Примерная высота элементов для расчета страниц
     const HEADER_HEIGHT = 150; // высота заголовка с логотипом
-    const FOOTER_HEIGHT = 100; // высота футера
-    const ITEM_HEIGHT = 35; // средняя высота одного элемента цены
+    const FOOTER_HEIGHT = 80; // высота футера
+    const ITEM_HEIGHT = 28; // седняя высота одного элемента цены
     const PAGE_HEIGHT = 1122; // 297mm в пикселях при 96 DPI (297 * 3.7795)
     const PADDING = 76; // 20mm padding сверху и снизу
 
@@ -45,7 +45,6 @@ export default function PriceList({ category, items }: PriceListProps) {
     totalPages: number;
   }) => (
     <div className="mt-auto pt-8 text-center text-sm text-gray-500">
-      <p className="mb-1">Скидка в День рождения 10%</p>
       <p className="mb-2">
         Работа во внеурочные часы с 8.30-10.30 и с 20.30-22.30 оплачивается +50%
         к основному прайсу, по предварительной договорённости.
@@ -88,7 +87,7 @@ export default function PriceList({ category, items }: PriceListProps) {
           <div className="flex-grow">
             {/* Заголовок - только на первой странице */}
             {pageIndex === 0 && (
-              <div className="text-center mb-6">
+              <div className="text-center mb-4">
                 <Image
                   width={540}
                   height={579}
@@ -112,11 +111,11 @@ export default function PriceList({ category, items }: PriceListProps) {
             )}
 
             {/* Таблица цен */}
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col">
               {pageItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex relative justify-between items-end pb-1"
+                  className="flex relative justify-between items-end pb-[2px]"
                 >
                   <div className="flex-1 pr-4">
                     <span className="font-medium bg-white relative text-black z-10 pr-1">
@@ -128,17 +127,13 @@ export default function PriceList({ category, items }: PriceListProps) {
                       </div>
                     )}
                   </div>
-                  <div className="absolute w-full border-b border-black bottom-2 z-0"/>
+                  <div className="absolute w-full border-b-[1.2px] border-black bottom-2 z-[1]" />
                   <div className="font-semibold text-black whitespace-nowrap text-right">
                     <span className="font-medium bg-white relative text-black z-10 pl-1">
                       {item.prefix && (
                         <span className="text-black">{item.prefix}</span>
                       )}
-                      {item.price}
-                      {typeof item.price === "number" ||
-                      !isNaN(Number(item.price))
-                        ? " р."
-                        : ""}
+                      {item.price} р.
                     </span>
                   </div>
                 </div>
