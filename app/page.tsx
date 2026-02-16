@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import PriceList from './components/PriceList';
+import AllPricesList from './components/AllPricesList';
 import type { PriceCategory } from '@/types/prices';
 
 export default function Home() {
   const [prices, setPrices] = useState<PriceCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,12 +38,14 @@ export default function Home() {
 
   // Обновляем title страницы при изменении категории
   useEffect(() => {
-    if (selectedCategory) {
+    if (showAll) {
+      document.title = 'Все прайс-листы | Манхэттен beauty bar';
+    } else if (selectedCategory) {
       document.title = `${selectedCategory} - Прайс-лист | Манхэттен beauty bar`;
     } else {
       document.title = 'Прайс-листы услуг | Манхэттен beauty bar';
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, showAll]);
 
   if (loading) {
     return (
@@ -82,13 +86,16 @@ export default function Home() {
           <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
             Прайс-листы услуг
           </h1>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-3 mb-4">
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setShowAll(false);
+                }}
                 className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                  selectedCategory === category
+                  selectedCategory === category && !showAll
                     ? 'bg-blue-600 text-white shadow-lg scale-105'
                     : 'bg-white text-gray-700 hover:bg-gray-100 shadow'
                 }`}
@@ -97,10 +104,25 @@ export default function Home() {
               </button>
             ))}
           </div>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowAll(true)}
+              className={`px-8 py-3 rounded-lg font-medium transition-all ${
+                showAll
+                  ? 'bg-green-600 text-white shadow-lg scale-105'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 shadow'
+              }`}
+            >
+              📋 Все прайс-листы
+            </button>
+          </div>
         </div>
 
-        {/* Прайс-лист */}
-        {selectedCategory && prices[selectedCategory] && (
+        {/* Все прайс-листы */}
+        {showAll && <AllPricesList prices={prices} />}
+
+        {/* Один прайс-лист */}
+        {!showAll && selectedCategory && prices[selectedCategory] && (
           <PriceList
             category={selectedCategory}
             items={prices[selectedCategory]}

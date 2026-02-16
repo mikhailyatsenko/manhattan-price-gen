@@ -1,22 +1,28 @@
 "use client";
 
-import { PriceItem } from "@/types/prices";
+import { PriceCategory, PriceItem } from "@/types/prices";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-interface PriceListProps {
-  category: string;
-  items: PriceItem[];
+interface AllPricesListProps {
+  prices: PriceCategory;
 }
 
-export default function PriceList({ category, items }: PriceListProps) {
-  const [pages, setPages] = useState<PriceItem[][]>([]);
+interface PageData {
+  category: string;
+  items: PriceItem[];
+  isFirstPageOfCategory: boolean;
+  isContinuation: boolean;
+}
+
+export default function AllPricesList({ prices }: AllPricesListProps) {
+  const [pages, setPages] = useState<PageData[]>([]);
 
   useEffect(() => {
     // Примерная высота элементов для расчета страниц
     const HEADER_HEIGHT = 150; // высота заголовка с логотипом
     const FOOTER_HEIGHT = 80; // высота футера
-    const ITEM_HEIGHT = 28; // седняя высота одного элемента цены
+    const ITEM_HEIGHT = 28; // средняя высота одного элемента цены
     const PAGE_HEIGHT = 1122; // 297mm в пикселях при 96 DPI (297 * 3.7795)
     const PADDING = 38; // 10mm padding сверху и снизу
 
@@ -24,14 +30,24 @@ export default function PriceList({ category, items }: PriceListProps) {
       PAGE_HEIGHT - PADDING * 2 - HEADER_HEIGHT - FOOTER_HEIGHT;
     const itemsPerPage = Math.floor(availableHeight / ITEM_HEIGHT);
 
-    // Разбиваем items на страницы
-    const paginatedItems: PriceItem[][] = [];
-    for (let i = 0; i < items.length; i += itemsPerPage) {
-      paginatedItems.push(items.slice(i, i + itemsPerPage));
-    }
+    const allPages: PageData[] = [];
 
-    setPages(paginatedItems);
-  }, [items]);
+    // Обрабатываем каждую категорию
+    Object.entries(prices).forEach(([category, items]) => {
+      // Разбиваем items на страницы
+      for (let i = 0; i < items.length; i += itemsPerPage) {
+        const pageItems = items.slice(i, i + itemsPerPage);
+        allPages.push({
+          category,
+          items: pageItems,
+          isFirstPageOfCategory: i === 0,
+          isContinuation: i > 0,
+        });
+      }
+    });
+
+    setPages(allPages);
+  }, [prices]);
 
   const handlePrint = () => {
     window.print();
@@ -76,17 +92,17 @@ export default function PriceList({ category, items }: PriceListProps) {
       </div>
 
       {/* Страницы A4 */}
-      {pages.map((pageItems, pageIndex) => (
+      {pages.map((page, pageIndex) => (
         <div
-          key={pageIndex}
+          key={`${page.category}-${pageIndex}`}
           className="print-area bg-white shadow-lg mx-auto flex flex-col mb-6 print:mb-0"
           style={{
             pageBreakAfter: pageIndex < pages.length - 1 ? "always" : "auto",
           }}
         >
           <div className="flex-grow">
-            {/* Заголовок - только на первой странице */}
-            {pageIndex === 0 && (
+            {/* Заголовок - только на первой странице категории */}
+            {page.isFirstPageOfCategory && (
               <div className="text-center mb-4">
                 <Image
                   width={540}
@@ -96,23 +112,23 @@ export default function PriceList({ category, items }: PriceListProps) {
                   alt="logo"
                 />
                 <h2 className="text-3xl text-black font-bold text-center mt-6">
-                  {category}
+                  {page.category}
                 </h2>
               </div>
             )}
 
             {/* Заголовок для продолжения на других страницах */}
-            {pageIndex > 0 && (
+            {page.isContinuation && (
               <div className="text-center pb-4 mb-6">
                 <h2 className="text-3xl text-black font-bold">
-                  {category} (продолжение)
+                  {page.category} (продолжение)
                 </h2>
               </div>
             )}
 
             {/* Таблица цен */}
             <div className="flex flex-col">
-              {pageItems.map((item, index) => (
+              {page.items.map((item, index) => (
                 <div
                   key={index}
                   className="flex relative justify-between items-end pb-[2px]"
